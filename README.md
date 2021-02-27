@@ -32,20 +32,20 @@ tensorflowをちゃんと書けるようにする
 
 # Notebooks
 ***[最初に提出してみたNotebook](https://www.kaggle.com/xhlulu/ranzcr-efficientnet-gpu-starter-train-submit)*** <br>
--Efficientnetb2をimagenetで学習させたものを利用する<br>
--auto-select-accelerator()は分散学習するための関数 <br>
+- Efficientnetb2をimagenetで学習させたものを利用する<br>
+- auto-select-accelerator()は分散学習するための関数 <br>
 ***[edaで参考にした1](https://www.kaggle.com/parthdhameliya77/ranzcr-clip-eda-class-imbalance-patient-overlap)*** <br>
--classの不均衡性を扱っていた<br>
+- classの不均衡性を扱っていた<br>
 ***[edaで参考にした2](https://www.kaggle.com/foolofatook/ranzcr-clip-one-stop-for-all-eda-needs)*** <br>
--annotationはすべてのデータについているわけではない? <br>
--自分で見ると何が違うか全くわからない<br>
--CVCとNGTはラベルのオーバーラップがあるがそれは一人の患者さんが複数のカルーテルを持っていて, どのカルーテルかによって状態が異なるからでラベル付をミスったとかではない <br>
+- annotationはすべてのデータについているわけではない? <br>
+- 自分で見ると何が違うか全くわからない<br>
+- CVCとNGTはラベルのオーバーラップがあるがそれは一人の患者さんが複数のカルーテルを持っていて, どのカルーテルかによって状態が異なるからでラベル付をミスったとかではない <br>
 <br>
 # Log
-***20200226*** <br>
--コンペに参加する.<br>
+***20200226*** <br> 
+- コンペに参加する.<br>
 - コンペを把握する. <br>
--とりあえず他のNotebookを参考にしてsubmitまでしてみた. <br> 
+- とりあえず他のNotebookを参考にしてsubmitまでしてみた. <br> 
 
 ***20200227*** <br>
  
