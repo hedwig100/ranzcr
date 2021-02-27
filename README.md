@@ -30,8 +30,16 @@ tensorflowをちゃんと書けるようにする<br>
 
 # Notebooks
 ***[最初に提出してみたNotebook](https://www.kaggle.com/xhlulu/ranzcr-efficientnet-gpu-starter-train-submit)*** <br>
-- Efficientnetb2をimagenetで学習させたものを利用する<br>
+- [Efficientnetb2](https://www.tensorflow.org/api_docs/python/tf/keras/applications/EfficientNetB2)をimagenetで学習させたものを転移学習させる<br>
+- dropconnectというdropoutに似た過学習を防ぐ手法 <br>
+- GlobalAveragePooling2Dはチャンネルごとの平均をとって重みを減らす手法 <br> 
 - auto-select-accelerator()は分散学習するための関数 <br>
+- 画像系のコンペではdecoderを利用して逐次的にデータを読み込むのが(メモリ的に)普通? <br>
+- tf.Datasetの使い方は[tensorflowの公式の説明](https://www.tensorflow.org/tutorials/load_data/images?hl=ja)がわかりやすかった <br>
+- datasetのload,整形 -> キャッシュしておく -> augmentaion -> repeat -> shuffle <br>
+- augmentation(左右, 上下反転)をする <br>
+- prefetchしておくことで訓練中にバッチを取得できて早くなる <br> 
+
 
 ***[edaで参考にした1](https://www.kaggle.com/parthdhameliya77/ranzcr-clip-eda-class-imbalance-patient-overlap)*** <br>
 - classの不均衡性を扱っていた<br>
@@ -48,6 +56,11 @@ tensorflowをちゃんと書けるようにする<br>
 - とりあえず他のNotebookを参考にしてsubmitまでしてみた. <br> 
 
 ***20200227*** <br>
+- EDAのnotebookを書いた. <br>
+- 昨日submitしたコードを読んで何をしているか理解した. <br> 
+- クラスが不均衡なのでweighted lossを使うことを検討する <br>
+- 学習率, augmentaionなどもっと工夫できそう <br> 
+- EfficientNetも他のものを使ってみても良さそう <br> 
  
 
 
