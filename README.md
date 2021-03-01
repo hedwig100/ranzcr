@@ -87,6 +87,9 @@ tensorflowをちゃんと書けるようにする<br>
 - 学習に時間がかかるのでepochを大きくできないので学習率をAnnealingした. `lr`は`5e-3`からスタートして`max(lr*np.exp(-0.1),1e-6)`のように変化させた. 
 これは[このNoteBook](https://www.kaggle.com/yasufuminakama/ranzcr-resnext50-32x4d-starter-training)にならった. <br>
  
-
-
-
+***20200301*** <br> 
+- 昨日学習させたモデルの学習率がうまく調節できていないせいか, モデルの精度が他の人が上げているNotebookに比べて明らかに悪い
+- エポックが少ない? -> エポックを15回にして1fold分だけ学習させてみた. -> それでも`val_auc=0.7`くらいで公開kernelの`val_auc=0.9`とかにはいかなかった. 
+- augmentationをalbumentationでやろうとしたら, `tf.data.Dataset`の扱いがわからなくてバグらせまくったので`tf.data.Dataset`について基本的なところを確認した. 
+- albumentationじゃなくて, tensorflowのものを使ってもいいかもしれない. 
+- KaggleKernel上でDensenet50で学習できるようにした. 明日回す. 
