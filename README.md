@@ -57,11 +57,27 @@ tensorflowをちゃんと書けるようにする<br>
 ***[5. Notebook](https://www.kaggle.com/underwearfitting/how-to-properly-split-folds)***
 - Validationの参考にした
 
+***[6. Notebook](https://www.kaggle.com/ragnar123/ranzcr-efficientnetb6-baseline)***
+- いろいろ参考にした. <br>
+- Efficientnet6 <br>
+- TPU <br>
+- tf.keras.imageを用いたAugmentation 参考リンク[tf.image](https://www.tensorflow.org/api_docs/python/tf/image) <br>
+- TestTimeAugmentation <br>
+- nb04 <br>
+
 # Papers 
 |No.|Status|name|detail|
 |:--:|:--:|:--:|:--:|
 |01|todo|[EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://arxiv.org/abs/1905.11946)|Efficientnetの元論文|
 |02|todo|[Aggregated Residual Transformations for Deep Neural Networks](https://arxiv.org/abs/1611.05431)|ResNeXtの元論文|
+
+# Submission
+|No.|explanation|CV|LB|
+|:--:|:--:|:--:|:--:|
+|1|試しにsubしてみた|0.9424|0.907|
+|2|1回目のがバグってたっぽくてもう一回出してみた|0.9359|0.916|
+|3|StratifiedGroupKFoldのFold1回分(時間がないので)|0.87864|0.849|
+|4|Densenet50のfold1|0.857|0.857|
 
 # Log
 ***20200226*** <br> 
@@ -93,3 +109,15 @@ tensorflowをちゃんと書けるようにする<br>
 - augmentationをalbumentationでやろうとしたら, `tf.data.Dataset`の扱いがわからなくてバグらせまくったので`tf.data.Dataset`について基本的なところを確認した. 
 - albumentationじゃなくて, tensorflowのものを使ってもいいかもしれない. 
 - KaggleKernel上でDensenet50で学習できるようにした. 明日回す. 
+
+***02020302*** <br> 
+- Densenet50,でスケジューラを`lr=1e-3`からスタートして, `ReduveLROnPlateau()`に戻して実行してみることにした. (nb_03)
+- 時間がないのでfold1つ分で実験することにした.
+- efficientnetb7はメモリがおかしくなって自分の実装じゃできなかった. 
+- 6Notebookをとりあえず理解していた. 
+- Densenet50は割といい感じな気がする. 学習率をもうちょっと調整したい. 
+- Densent50 + Augmentation(saturate + hue + flip(上下左右))で明日動かしてみる. 
+- TPUでeffcientnetb7を学習させてみたら, めちゃくちゃ早くて感動した.
+- TPUのは本当にStratifiedGroupKFoldで学習させているのか
+- ttaありのEffcientnetB6ではauc0.9くらいまでいった.
+- 明日やるべきことはEfficientnetb6とdensenet50の学習をすること
