@@ -77,7 +77,9 @@ tensorflowをちゃんと書けるようにする<br>
 |1|試しにsubしてみた|0.9424|0.907|
 |2|1回目のがバグってたっぽくてもう一回出してみた|0.9359|0.916|
 |3|StratifiedGroupKFoldのFold1回分(時間がないので)|0.87864|0.849|
-|4|Densenet50のfold1|0.857|0.857|
+|4|Resnet50のfold1|0.857|0.857|
+|5|Resnet50のfold1,augmentation追加|0.8873||
+|6|EfficientNetb6,augmentation,TTA(学習率を小さくしすぎた)|0.834||
 
 # Log
 ***20200226*** <br> 
@@ -108,16 +110,36 @@ tensorflowをちゃんと書けるようにする<br>
 - エポックが少ない? -> エポックを15回にして1fold分だけ学習させてみた. -> それでも`val_auc=0.7`くらいで公開kernelの`val_auc=0.9`とかにはいかなかった. 
 - augmentationをalbumentationでやろうとしたら, `tf.data.Dataset`の扱いがわからなくてバグらせまくったので`tf.data.Dataset`について基本的なところを確認した. 
 - albumentationじゃなくて, tensorflowのものを使ってもいいかもしれない. 
-- KaggleKernel上でDensenet50で学習できるようにした. 明日回す. 
+- KaggleKernel上でResnet50で学習できるようにした. 明日回す. 
 
-***02020302*** <br> 
-- Densenet50,でスケジューラを`lr=1e-3`からスタートして, `ReduveLROnPlateau()`に戻して実行してみることにした. (nb_03)
+***2020302*** <br> 
+- Resnet50,でスケジューラを`lr=1e-3`からスタートして, `ReduveLROnPlateau()`に戻して実行してみることにした. (nb_03)
 - 時間がないのでfold1つ分で実験することにした.
 - efficientnetb7はメモリがおかしくなって自分の実装じゃできなかった. 
 - 6Notebookをとりあえず理解していた. 
-- Densenet50は割といい感じな気がする. 学習率をもうちょっと調整したい. 
-- Densent50 + Augmentation(saturate + hue + flip(上下左右))で明日動かしてみる. 
+- Resnet50は割といい感じな気がする. 学習率をもうちょっと調整したい. 
+- Resnt50 + Augmentation(saturate + hue + flip(上下左右))で明日動かしてみる. 
 - TPUでeffcientnetb7を学習させてみたら, めちゃくちゃ早くて感動した.
 - TPUのは本当にStratifiedGroupKFoldで学習させているのか
 - ttaありのEffcientnetB6ではauc0.9くらいまでいった.
 - 明日やるべきことはEfficientnetb6とdensenet50の学習をすること
+
+***20200303*** <br> 
+- Resnet50 + augmentationはaugmentationをしっかりやっていないものよりだいぶcvがよくなった. <br>
+- EffcientnetB6は昨日動かしたのが, keras.application.effcientnetのものではなく, inferenceの際には使えなかったので, kerasで学習し直した. <br>
+そうすると, 学習率が小さくなりすぎてほとんど学習していなかったので, もう一度学習させた. <br>
+- そうしたらもっと悪くなった?? 
+```
+def WeightedBinaryCrossentropy(y_true,y_pred):
+    y_true = tf.cast(y_true,tf.float32)
+    pos_loss = -mul(mul(    y_true,tf.math.log(    y_pred)),pos_weight) 
+    neg_loss = -mul(mul(1.0 - y_true,tf.math.log(1 - y_pred)),neg_weight) 
+    loss = tf.add(pos_loss,neg_loss)
+    return tf.math.reduce_mean(loss,0)
+```
+- 上のような重み付き損失関数で学習させてみた. (nb03,ResNet50) <br>
+- EffcientNetB6の提出時にエラーが起こる. <br>
+- dataload-augmentation-model-ttaのパイプラインを作る. (ranzcr_nb05)
+- そのために, TPUとalubumentationを使う. 
+- **validデータをtestからとる**というバグを埋め込んでいた. 気づかなかった. ラベルとの対応もおかしかった. nb03の結果が何も信頼できなくなった. 
+- 明日 tfrecordをつくる and albumentation をもちいて学習させる. 
