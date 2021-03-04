@@ -78,8 +78,9 @@ tensorflowをちゃんと書けるようにする<br>
 |2|1回目のがバグってたっぽくてもう一回出してみた|0.9359|0.916|
 |3|StratifiedGroupKFoldのFold1回分(時間がないので)|0.87864|0.849|
 |4|Resnet50のfold1|0.857|0.857|
-|5|Resnet50のfold1,augmentation追加|0.8873||
-|6|EfficientNetb6,augmentation,TTA(学習率を小さくしすぎた)|0.834||
+|5|no03_5_0,Resnet50のfold1,augmentation追加|0.8873|0.864|
+|6|nb03_7_0,Resnet50,|0.856|0.835|
+|7|nb05_1_0,Resnet50,weightedloss,tta|0.843|0.860|
 
 # Log
 ***20200226*** <br> 
@@ -143,3 +144,10 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - そのために, TPUとalubumentationを使う. 
 - **validデータをtestからとる**というバグを埋め込んでいた. 気づかなかった. ラベルとの対応もおかしかった. nb03の結果が何も信頼できなくなった. 
 - 明日 tfrecordをつくる and albumentation をもちいて学習させる. 
+
+***20200304*** <br> 
+- Tfrecordを作成した
+- TTAがうまくいかない(shapeが合わなくてエラーになる)のでstepを切り上げにして調整した. 
+- nb04_4 weightedloss + effcientnetB6 
+- nb05_1 weightedloss + resnet50 + augmentation + ttaをだす. 
+- 明日 albumentationをやる. 
