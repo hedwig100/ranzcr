@@ -81,6 +81,9 @@ tensorflowをちゃんと書けるようにする<br>
 |5|no03_5_0,Resnet50のfold1,augmentation追加|0.8873|0.864|
 |6|nb03_7_0,Resnet50,|0.856|0.835|
 |7|nb05_1_0,Resnet50,weightedloss,tta|0.843|0.860|
+|8|nb05_5_0,Resnet152,weightedloss,tta|0.843|0.854| 
+|9|nb05_6_0,Resnet152,lrを変えた|0.852||
+
 
 # Log
 ***20200226*** <br> 
@@ -151,3 +154,10 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - nb04_4 weightedloss + effcientnetB6 
 - nb05_1 weightedloss + resnet50 + augmentation + ttaをだす. 
 - 明日 albumentationをやる. 
+
+***20200305*** <br> 
+- albumentationでやろうとしたら, 異常な画像ができた. -> tf.imageのaugmentationで足りそうだしいいか. 
+- 画像コンペはどんな方法が効くのかわからない
+- lossとして, SigmoidFocaCrossEntropyというクラス不均衡に対応する損失関数を用いてみた. => そんなよくならなかった. 
+- 画像サイズをもっと大きくした方が良い?(224,224) => (768,768) => 全然実行が終わらない. 
+- train_metricとval_metricが離れすぎてて, なんかバグってる気がしないでもない. 
