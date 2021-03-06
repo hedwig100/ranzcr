@@ -65,6 +65,9 @@ tensorflowをちゃんと書けるようにする<br>
 - TestTimeAugmentation <br>
 - nb04 <br>
 
+***[7. Notebook](https://www.kaggle.com/amritpal333/clahe-augmentation-ranzcr-comp)***
+- CLAHEというdata-augmentationの方法, みた感じ画像がクリアになっている感じがする. 
+
 # Papers 
 |No.|Status|name|detail|
 |:--:|:--:|:--:|:--:|
@@ -82,7 +85,8 @@ tensorflowをちゃんと書けるようにする<br>
 |6|nb03_7_0,Resnet50,|0.856|0.835|
 |7|nb05_1_0,Resnet50,weightedloss,tta|0.843|0.860|
 |8|nb05_5_0,Resnet152,weightedloss,tta|0.843|0.854| 
-|9|nb05_6_0,Resnet152,lrを変えた|0.852||
+|9|nb05_6_0,Resnet152,lrを変えた|0.852|0.858|
+|10|nb05_7_0,ResNet152,imsize=(512),CosineAnnealing|0.894||
 
 
 # Log
@@ -161,3 +165,11 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - lossとして, SigmoidFocaCrossEntropyというクラス不均衡に対応する損失関数を用いてみた. => そんなよくならなかった. 
 - 画像サイズをもっと大きくした方が良い?(224,224) => (768,768) => 全然実行が終わらない. 
 - train_metricとval_metricが離れすぎてて, なんかバグってる気がしないでもない. 
+
+***20200306*** <br> 
+- Imageサイズが医療画像ではかなり重要だというのをみて, 画像サイズを(512,512)にしてみた. (768,768)はTFRecordがつくれなかった. => outputファイルが大きすぎただけなので, 作り直せた. 
+- ValidのAUCがずっと0.5で流石におかしかったのでバグを探す. (nb_06) => validデータは/255.0していなかった! => それでもおかしいnb06バグってる. 
+- 上のをバグっていないであろうコードで動かすと, 0.89くらいのCrossValidationとなった. 
+- CLAHEという画像をよりはっきりさせる前処理を試してみたい. 
+- MultiHeadモデルは試してみたい. => nb07 
+- 3-Stage Training は時間があれば試す. 
