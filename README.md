@@ -68,6 +68,23 @@ tensorflowをちゃんと書けるようにする<br>
 ***[7. Notebook](https://www.kaggle.com/amritpal333/clahe-augmentation-ranzcr-comp)***
 - CLAHEというdata-augmentationの方法, みた感じ画像がクリアになっている感じがする. 
 
+***[8. Notebook](https://www.kaggle.com/tomohiroh/pytorch-starter)***
+- Pytorchが何もわからなかったので, とりあえず書けるようになるには良さそうだと思った. 
+
+***[9. Notebook](https://www.kaggle.com/underwearfitting/single-fold-training-of-resnet200d-lb0-965)***
+- PytorchでResNet200Dを用いている, 過去の医療画像コンペの優勝解法を参考にしているっぽい? 
+- めっちゃHighScoreKernelで, 憚られるけどCvとLBの相関があるので全然Shakeしなさそうだし, ResNet200Dを使ってみたいので. 
+- 計算時間多すぎていまからやるのが向いてなさそう. 
+
+***[10 Notebook](https://www.kaggle.com/yasufuminakama/ranzcr-resnet200d-3-stage-training-step1)***
+- 3-Stage Modellingの1-Stage
+- 1-Stage annotated-imageを用いた学習
+- 2-Stage 1-Stageで用いたモデルは固定して, 1-Stageのモデルと2-Stageのモデルの出力が近づき, かつBCEが小さくなるように2-Stageのモデルを学習させる
+- 3-Stage 2-StageのモデルをlossをBCEのみにして, fine-tuningする
+- annotated imageの一つの利用法
+- annotationをどうやってつかうかが参考になった. 
+![annotationの使い方]("images/how-to-use-annotation.png")
+
 # Papers 
 |No.|Status|name|detail|
 |:--:|:--:|:--:|:--:|
@@ -86,7 +103,8 @@ tensorflowをちゃんと書けるようにする<br>
 |7|nb05_1_0,Resnet50,weightedloss,tta|0.843|0.860|
 |8|nb05_5_0,Resnet152,weightedloss,tta|0.843|0.854| 
 |9|nb05_6_0,Resnet152,lrを変えた|0.852|0.858|
-|10|nb05_7_0,ResNet152,imsize=(512),CosineAnnealing|0.894||
+|10|nb05_7_0,ResNet152,imsize=(512),CosineAnnealing|0.894|0.908|
+|11|nb05_11_0,ResNet152,MultiHead,WeightedLoss|0.878|| 
 
 
 # Log
@@ -173,3 +191,13 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - CLAHEという画像をよりはっきりさせる前処理を試してみたい. 
 - MultiHeadモデルは試してみたい. => nb07 
 - 3-Stage Training は時間があれば試す. 
+
+***20200307*** <br> 
+- 512*512のResNet152はCV 0.89, LB 0.908となっていい感じだった. 画像サイズはやっぱり重要? 
+- 同じことをEffcientNetB6に試したが, それほどいいcvじゃなかった. 
+- MultiHeadModelも試したけど, 層のサイズの調整がまだできていなくて, それほど良いcvじゃなかった. まだ試す価値はあると思う. 
+- ResNet200Dが使えないとお話にならない感があるので, Pytorchを書く決意をした. => nb08
+- Notebook9をとりあえず理解する... => nb09 
+- annotation使った方がいいってDiscuttionで言われているので(当たり前だけど), 使うことにする. => どうやって使うの? => 3-stage Model? 
+- 明日, tensorflow + CLAHE と 3-Stage Modelをやってみる. 
+
