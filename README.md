@@ -104,7 +104,10 @@ tensorflowをちゃんと書けるようにする<br>
 |8|nb05_5_0,Resnet152,weightedloss,tta|0.843|0.854| 
 |9|nb05_6_0,Resnet152,lrを変えた|0.852|0.858|
 |10|nb05_7_0,ResNet152,imsize=(512),CosineAnnealing|0.894|0.908|
-|11|nb05_11_0,ResNet152,MultiHead,WeightedLoss|0.878|| 
+|11|nb05_11_0,ResNet152,MultiHead,WeightedLoss|0.878|0.897|
+|12|nb05_12_0,ResNet152,imsize=(768,768)|0.916|0.930|
+|13|nb05_13_0,ReNet152,WeightedLoss|0.920|0.932| 
+
 
 
 # Log
@@ -201,3 +204,8 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - annotation使った方がいいってDiscuttionで言われているので(当たり前だけど), 使うことにする. => どうやって使うの? => 3-stage Model? 
 - 明日, tensorflow + CLAHE と 3-Stage Modelをやってみる. 
 
+***20200308*** <br> 
+- WeightedBinaryCrossEntropyが最高だった. SigmoidFocalLossよりもよいCVだった. FocalLossとかより断然いい. 
+- keras + clahe を実装した. keras.dataset + albumentation の実装とcastとかで手間取った. 
+- tf.numpy_function + TPUは動かないらしい... そうすると, pytorchかGPUで動かさないとalbumentationが使えない. 
+- annotationを使うのが厳しい. 
