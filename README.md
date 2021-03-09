@@ -209,3 +209,14 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - keras + clahe を実装した. keras.dataset + albumentation の実装とcastとかで手間取った. 
 - tf.numpy_function + TPUは動かないらしい... そうすると, pytorchかGPUで動かさないとalbumentationが使えない. 
 - annotationを使うのが厳しい. 
+
+***20200309*** <br> 
+- imsize = 768でResNet152が今のところ0.924のCVで一番いい. 
+- 3-Stage TrainingのためにAnnotationつきのDatasetを作った. 
+- 3-Stage nb10 => nb11 
+- annotation付き + claheかけた　datasetを作った. 
+- 1Stageは完了した. 1StageのAUCはAnnotationがついているので確かに0.99ぐらいまで行った. 
+- 2Stageの実装を完了した. kerasのカスタム損失の実装に手間取った. 
+- なぜかわからないけどval_lossがnanになる. なんでだろう. 
+- 2Stage目の学習がうまくいかない- lossがnanになる. 
+- claheかけただけのimsize=512画像を使って学習しようとしたけど, GPUだとメモリエラーになってしまった. 
