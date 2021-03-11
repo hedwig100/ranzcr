@@ -83,7 +83,7 @@ tensorflowをちゃんと書けるようにする<br>
 - 3-Stage 2-StageのモデルをlossをBCEのみにして, fine-tuningする
 - annotated imageの一つの利用法
 - annotationをどうやってつかうかが参考になった. 
-![annotationの使い方]("images/how-to-use-annotation.png")
+![annotationの使い方]("./images/how-to-use-annotation.png")
 
 # Papers 
 |No.|Status|name|detail|
@@ -227,3 +227,7 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - Pytorch+GPUだとメモリがきつすぎて,batchsize=4とかになってめちゃくちゃ時間かかる. 
 - 他の人がやってる実装に比べてそれほど違うわけではないのに, なんでこんなにScoreが違うんだ?
 
+***20200311*** <br> 
+- Pytorchの計算を回してたけど, 止まっていた. (学習時間の制限?)
+- 2Stage目がバグってた. 確率の二乗誤差をとっても意味ない. sigmoidをかける前のものと二乗誤差をとって, sigmoidをかけた後にbceをとるべき. 
+- バグを直したけれど, lossが小さくならなくて, auc=0.7くらいにしかならない. 
