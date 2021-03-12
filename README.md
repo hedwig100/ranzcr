@@ -231,3 +231,11 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - Pytorchの計算を回してたけど, 止まっていた. (学習時間の制限?)
 - 2Stage目がバグってた. 確率の二乗誤差をとっても意味ない. sigmoidをかける前のものと二乗誤差をとって, sigmoidをかけた後にbceをとるべき. 
 - バグを直したけれど, lossが小さくならなくて, auc=0.7くらいにしかならない. 
+
+***20200312*** <br> 
+- アンサンブルする. 
+- Resnet152 + imsize 768
+- EfficientNetB6 + imisize 512 + CLAHE 
+- ResNet152 + imsize 512 + 3StageModeling
+- MultiHeadModel? + imsize 512 (そんなに精度が良くない)
+- lossはすべてWeightedBinaryCrossentropyにする. TPU Quotaがないので, 明日から5Fold分回す. 
