@@ -107,7 +107,9 @@ tensorflowをちゃんと書けるようにする<br>
 |11|nb05_11_0,ResNet152,MultiHead,WeightedLoss|0.878|0.897|
 |12|nb05_12_0,ResNet152,imsize=(768,768)|0.916|0.930|
 |13|nb05_13_0,ReNet152,WeightedLoss|0.920|0.932| 
-
+|14|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920||
+|15|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920||
+|16|nb05_13_0,ReNet152,WeightedLoss,ttaにclaheを追加|0.920||
 
 
 # Log
@@ -239,3 +241,8 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - ResNet152 + imsize 512 + 3StageModeling
 - MultiHeadModel? + imsize 512 (そんなに精度が良くない)
 - lossはすべてWeightedBinaryCrossentropyにする. TPU Quotaがないので, 明日から5Fold分回す. 
+
+***20200313*** <br> 
+- アンサンブルする時に各モデルの確率pをp**0.5で足すとCVが良くなる? [discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/211194)
+- 学習を回していた. 
+- submit時にalbumentation + kerasで実行するように実装した. 
