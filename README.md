@@ -83,7 +83,6 @@ tensorflowをちゃんと書けるようにする<br>
 - 3-Stage 2-StageのモデルをlossをBCEのみにして, fine-tuningする
 - annotated imageの一つの利用法
 - annotationをどうやってつかうかが参考になった. 
-![annotationの使い方]("./images/how-to-use-annotation.png")
 
 # Papers 
 |No.|Status|name|detail|
@@ -107,9 +106,11 @@ tensorflowをちゃんと書けるようにする<br>
 |11|nb05_11_0,ResNet152,MultiHead,WeightedLoss|0.878|0.897|
 |12|nb05_12_0,ResNet152,imsize=(768,768)|0.916|0.930|
 |13|nb05_13_0,ReNet152,WeightedLoss|0.920|0.932| 
-|14|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920||
-|15|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920||
-|16|nb05_13_0,ReNet152,WeightedLoss,ttaにclaheを追加|0.920||
+|14|nb05_13_0,ReNet152,WeightedLoss(バグの確認),cacheするとerrorになる|0.920|Error|
+|15|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920|0.933|
+|16|nb05_13_0,ReNet152,WeightedLoss,ttaにclaheを追加|0.920|0.906|
+|17|nb05_13_7,ResNet152,claheかけて学習|0.913|0.929|
+|18|ResNet152,imsize=512,5fold分全て用いる|0.919(0.911)||
 
 
 # Log
@@ -246,3 +247,10 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - アンサンブルする時に各モデルの確率pをp**0.5で足すとCVが良くなる? [discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/211194)
 - 学習を回していた. 
 - submit時にalbumentation + kerasで実行するように実装した. 
+
+***20200314*** <br> 
+- imsize = 768の5fold分の学習も行った. 
+- とてもではないけどメダル圏内に届きそうではないけど, 一応アンサンブルする. 
+- Submit時間的に2モデル*5foldくらいが限界か? 
+- 初Notebook投稿した. 
+- 明日くらいにアンサンブルしたものを提出する, アンサンブルしてもそんなに良くなってないけど.
