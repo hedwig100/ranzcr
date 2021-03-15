@@ -110,7 +110,8 @@ tensorflowをちゃんと書けるようにする<br>
 |15|nb05_13_0,ReNet152,WeightedLoss(バグの確認)|0.920|0.933|
 |16|nb05_13_0,ReNet152,WeightedLoss,ttaにclaheを追加|0.920|0.906|
 |17|nb05_13_7,ResNet152,claheかけて学習|0.913|0.929|
-|18|ResNet152,imsize=512,5fold分全て用いる|0.919(0.911)||
+|18|ResNet152,imsize=512,5fold分全て用いる|0.919(0.911)|0.942|
+|19|ResNet152,imsize=7685fold|0.930(0.922)||
 
 
 # Log
@@ -254,3 +255,9 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - Submit時間的に2モデル*5foldくらいが限界か? 
 - 初Notebook投稿した. 
 - 明日くらいにアンサンブルしたものを提出する, アンサンブルしてもそんなに良くなってないけど.
+
+***20200315*** <br> 
+- aucは普通にaverageするよりrank avarageした方がいいらしい. 
+- aucの[https://www.kaggle.com/c/santander-customer-satisfaction/discussion/20783](アンサンブル)の方法の一つ, 何乗かしてから平均をとることで. aucが良くなることがある. 
+- 2乗,4乗,0.5乗など試したけれどrank averageが一番よかった.
+- pred1*pred**4みたいに掛け算の場合も重みをつけた方がよかった. 
