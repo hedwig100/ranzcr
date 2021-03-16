@@ -84,6 +84,11 @@ tensorflowをちゃんと書けるようにする<br>
 - annotated imageの一つの利用法
 - annotationをどうやってつかうかが参考になった. 
 
+***[11 Notebook](https://www.kaggle.com/underwearfitting/resnet200d-public-benchmark-2xtta-lb0-965)***
+- 重みを使わせていただきました... 
+- heavy augmentationはこんなにheavy. 
+- [Training Code](https://www.kaggle.com/underwearfitting/single-fold-training-of-resnet200d-lb0-965)
+
 # Papers 
 |No.|Status|name|detail|
 |:--:|:--:|:--:|:--:|
@@ -91,6 +96,9 @@ tensorflowをちゃんと書けるようにする<br>
 |02|todo|[Aggregated Residual Transformations for Deep Neural Networks](https://arxiv.org/abs/1611.05431)|ResNeXtの元論文|
 
 # Submission
+括弧なしのスコアは1fold目のみのスコアで, 括弧がついている場合は, 括弧内が1fold目のスコアで括弧がついていないものが,5foldの
+平均のスコア.
+
 |No.|explanation|CV|LB|
 |:--:|:--:|:--:|:--:|
 |1|試しにsubしてみた|0.9424|0.907|
@@ -111,8 +119,8 @@ tensorflowをちゃんと書けるようにする<br>
 |16|nb05_13_0,ReNet152,WeightedLoss,ttaにclaheを追加|0.920|0.906|
 |17|nb05_13_7,ResNet152,claheかけて学習|0.913|0.929|
 |18|ResNet152,imsize=512,5fold分全て用いる|0.919(0.911)|0.942|
-|19|ResNet152,imsize=7685fold|0.930(0.922)||
-
+|19|ResNet152,imsize=7685fold|0.930(0.922)|Timeout|
+|20|ResNet152,imsize=768とResnet200Dの公開重みのアンサンブル|0.958(0.956)||
 
 # Log
 ***20200226*** <br> 
@@ -261,3 +269,10 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - aucの[https://www.kaggle.com/c/santander-customer-satisfaction/discussion/20783](アンサンブル)の方法の一つ, 何乗かしてから平均をとることで. aucが良くなることがある. 
 - 2乗,4乗,0.5乗など試したけれどrank averageが一番よかった.
 - pred1*pred**4みたいに掛け算の場合も重みをつけた方がよかった. 
+
+***20200316*** <br> 
+- 昨日からアンサンブルしたものが全部submittion scoring errorで焦っている. 
+- 多分提出するcsvファイルにfile_pathっていう無駄なcolumnをつけていたことが問題だったけど, あと1subしかない. 
+- もっと早くからアンサンブルの準備をして, 最後の一日は予備日として残しておくくらいではないといけないと思った. 
+- 公開されてる重みとアンサンブルした. 
+- もうやることがないのでコードの整理をしてこのレポジトリにあげた. 
