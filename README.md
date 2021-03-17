@@ -5,6 +5,77 @@ RANZCR用のレポジトリ
 画像コンペに慣れる <br>
 tensorflowをちゃんと書けるようにする<br>
 
+# Rank 
+||PublicLB|PrivateLB|
+|:--:|:--:|:--:|
+|score|0.965|0.967|
+|rank|800|712|
+
+# Solution 
+## 1-st place 
+[discussion1](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226576) 
+[discussion2](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226633)
+[code]()
+
+### 概要
+- 5-segmentation-models(imsize=1024~1536) + 67-classification-models(imsize=384,512)
+- StratifiedGroupKFold 
+### 感想
+- めっちゃ画像サイズおおきいsegmentation(重要な部分のみ切り出す?) => 分類する
+
+## 6-th place 
+### 概要
+- 
+### 感想
+-
+
+## 7-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226621) 
+
+### 概要
+- imsize=768のモデル. 
+- UNet-CNNのArchitecture, UNetはsegmentation用のもの, segmentationはETT,NGT,CVS+SGC(大まかなクラスごと)のchannelで出力した. CV-LB-correlatioinがよりrobustになった. 
+- ResNet200D,EfficientNetB7,NFNet-f1の大きなモデルを使った.
+- ResNet200D,EfficientNetB7はUNetEncoderを用いて使えたけど, NFNetは難しかったので3StageTrainingした. 
+- 外部データはpseudo-labelingしてクラスのバランスよくデータを増やした. 
+- 外部データでのtrainingはteacher-student形式でtrainingした後に, 元のdatasetでfine-tuningした. 
+
+### 感想
+
+## 11-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226557)
+
+### 概要
+- HighResolutionな画像を使うために, 一層目のCNNでimsize=2048の画像をimsize=1024の画像に縮小してから(downconv), 普通のCNN(ResNetとか?)に入れて学習させた. 
+- annotationを使うためにsegmentationを用いた. segmentationとclassificationを同時に用いるのは(multi-task learning)成功しなかったが, まずsegmentationをするモデルを学習させてから, その後にclassificationするモデルを使うとよかった. segmentation時に正例に重みをつけないと動かなかった(classificationではなくて?). segmentationにはUNetというmodelを用いた. 
+- unlabeledな外部データがあり, それを利用した. Pretrainはそれほど機能しなかった. Pseudo-trainingは効いた. 5foldで学習したあとに, unlabeled-dataの予測をして, 確信度が高い(確率0.5以上)データと合わせてもう一回trainingした. 
+- hard agumentation
+
+### 感想
+- imsizeが大きい方が良いのはわかっていたけれど, 2048までいくとは思わなかった. 高解像度な画像を用いたいが, memory的に厳しい時にこれは役に立つかもしれない. 
+- UNetを初めて知った. Segmentationに使われるモデルらしい. [参考](https://qiita.com/hiro871_/items/871c76bf65b76ebe1dd0)
+- pseudo labelingは使うことも考えたけど, そもそものモデルの性能が悪すぎて全然labelingできなさそうだと思ったのでやめていた. discussionに書いてあったけどもしpretrainedする場合はデータの重複がないことを確認しないとLeakになってしまうのでその辺が難しそう. 
+
+
+# 反省点
+- TensorFlowを書けるようにするという目標もあったので仕方ないが, torchの方が学習済みモデルがたくさんあったので, torchを使うことをもっと前から検討すればよかった. 
+- CVとLBが相関していたので出さなくてもいいかと思っていた時期があったが, submitしないと単純にモチベーションが下がるのできちんと提出はした方が良い. 
+- 3stage-modelingなどannotationをうまく使うことができなかった. 学習がうまくいかなかった. 
+- kaggle-notebook以外の環境(Google Colab)を使わなかった, 画像コンペだと計算資源も大事. 
+- 最終日にsubmittion errorを出した. コンペの期限から逆算して余裕を持って終わるくらいの方がいい? 
+- コードが汚かった. めちゃくちゃわかりやすくなくても良いけど, 後から見てわかるくらいにはしておくべき. 
+
+# 学習したこと
+- tf.dataset, tfrecordなどの扱い方
+- tfでTPUを使うやり方
+- torchの基本的な書き方. 
+- 画像コンペではimsizeは想像より重要だった. 
+- heavyなaugmentationをかけることはoverfittingを防ぐために大事だった. 
+- 学習率, schedulerは結構重要だった. 
+- 指標がaucの場合のアンサンブルの仕方. 
+- teacher-student-modelでannotationを使う. 
+- いろんなモデル(efficientnetB6,7,ResNet152)などを知ることができた. 
+
 # Data
 |name|explanation|
 |:--:|:--:|
@@ -120,7 +191,7 @@ tensorflowをちゃんと書けるようにする<br>
 |17|nb05_13_7,ResNet152,claheかけて学習|0.913|0.929|
 |18|ResNet152,imsize=512,5fold分全て用いる|0.919(0.911)|0.942|
 |19|ResNet152,imsize=7685fold|0.930(0.922)|Timeout|
-|20|ResNet152,imsize=768とResnet200Dの公開重みのアンサンブル|0.958(0.956)||
+|20|ResNet152,imsize=768とResnet200Dの公開重みのアンサンブル|0.958(0.956)|0.965|
 
 # Log
 ***20200226*** <br> 
@@ -276,3 +347,6 @@ def WeightedBinaryCrossentropy(y_true,y_pred):
 - もっと早くからアンサンブルの準備をして, 最後の一日は予備日として残しておくくらいではないといけないと思った. 
 - 公開されてる重みとアンサンブルした. 
 - もうやることがないのでコードの整理をしてこのレポジトリにあげた. 
+
+***20200317*** <br> 
+- 他の人のsolution見たいたら, めちゃくちゃアンサンブルしてるけど, 自分のコードだと10modelくらいが限界でなんでこんなアンサンブルできるのかわからない. 
