@@ -13,24 +13,51 @@ tensorflowをちゃんと書けるようにする<br>
 
 # Solution 
 ## 1-st place 
-[discussion1](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226576) 
-[discussion2](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226633)
+[discussion1](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226576) <br>
+[discussion2](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226633) <br> 
 [code]()
 
 ### 概要
-- 5-segmentation-models(imsize=1024~1536) + 67-classification-models(imsize=384,512)
+- NIH Chest X-Ray Dataを使った. Trainとして与えれたデータ以外にも, このうちTubeを含む画像のみを取り出した. そして, 同じ患者かどうかをPatientIDで区別して同じFoldに入らないようにした.
+- 外部データで同じ画像を検出するのにhashを使っていた. Tubeを含む画像のみを取り出すためにtrainのannotationありの画像で訓練したsegmentationモデルを使っていた. 
+- 画像の前処理として[Ben's pre-processing?](https://www.kaggle.com/ratthachat/aptos-eye-preprocessing-in-diabetic-retinopathy#2.-Try-Ben-Graham's-preprocessing-method.)を使った. 
+- 外部データのsemgmentationはpseudolabelingでつけた(元のtraindataの画像で訓練したsegmentationnetworkの出力結果?)
+- segmentationはUnetとUnet++の10モデルのアンサンブルでつけた. annotationはtube自体とtubeの先端を用いた. 画像サイズは1024から1536!!
+- stage2 segmentationとして, segmentationをつけるmodelを作った. (つまり, inference時にtest dataをsegmentationするためのモデル)
+- stage2 segmentationをしてから, 384から512くらいの画像サイズでsegmentationと元の画像を合わせた6channelをinputにしてクラス分類を行った. 
+- 追加のクラス(No-ETT)を導入して,ETTに関してはCE, それ以外はBCEでlossをつけた. このstege1 classification modelを用いてpseudo labelingを行った. 
+- stage2　classification modelでpseudo labelingしたデータも加えてtrainingした. 
+- 最後はrank-ensembleした. 
+- 5-segmentation-models(imsize=1024~1536) + 67-classification-models(imsize=512,512)
 - StratifiedGroupKFold 
+
 ### 感想
+- 外部データをこんなに使用するものなんだと思った. 
+- segmentationの画像サイズ大きすぎ, segmentationの時点で10モデルもアンサンブルするのか. 
+- segmentationで重要な情報を取り出せているから, classification modelの画像サイズは小さくて良いのかと思った. 
+- segmentationは大事. 
+- クラスを追加で入れてみて, より分類しやすくなることがあるのかもしれない. クラスを追加するという発想がなかった. 
+- まとめるとstage1 segでsegのpseudo labelingする => stage2 segでsegをつけるモデルを作る => stage1 clsでpseudo labelingをする => stage2 clsでclsをする. 
 - めっちゃ画像サイズおおきいsegmentation(重要な部分のみ切り出す?) => 分類する
 
 ## 6-th place 
+[descussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226616)
+
 ### 概要
-- 
+- segmentaion maskなし. 
+- 1024から1408などの大きなimagesizeを用いた. efb6やb7などを用いた. 
+- 追加のクラス(CVC-present,NGT-presenet,ETT-present,そもそも存在しているかどうか)を入れて学習させた. 
+- Auxilliary heads(modelの中間層にも出力層をつくった,Supervision Technic?)
+- [self-distillation](https://arxiv.org/abs/1905.08094): 浅い層を深い層の出力を利用して学習させる. 学習が早く進む?
+- [Noisy Student](https://ai-scholar.tech/articles/treatise/noisy-student-ai-379): 前の学習で出力したOOFもtargetにして次のKFOLDを学習させた. studentはaugmentationなどを強めにかけてよりnoisyにする? 2~3,7~8cycleくらいした. 0.004~0.005くらいCVがよくなった. 
+
 ### 感想
--
+- Axilliary headsはvery deep neural networkにおいて収束を早くするために導入されるものらしい. 直感的には浅い層にgradientの影響を早めに到達させるみたいなこと?
+- Noisy Student勉強になった. 
 
 ## 7-th place 
 [discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226621) 
+[notebook](https://www.kaggle.com/analokamus/resnet200d-encoder-for-segmentation-models-pytorch)
 
 ### 概要
 - imsize=768のモデル. 
@@ -39,8 +66,6 @@ tensorflowをちゃんと書けるようにする<br>
 - ResNet200D,EfficientNetB7はUNetEncoderを用いて使えたけど, NFNetは難しかったので3StageTrainingした. 
 - 外部データはpseudo-labelingしてクラスのバランスよくデータを増やした. 
 - 外部データでのtrainingはteacher-student形式でtrainingした後に, 元のdatasetでfine-tuningした. 
-
-### 感想
 
 ## 11-th place 
 [discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226557)
@@ -56,6 +81,57 @@ tensorflowをちゃんと書けるようにする<br>
 - UNetを初めて知った. Segmentationに使われるモデルらしい. [参考](https://qiita.com/hiro871_/items/871c76bf65b76ebe1dd0)
 - pseudo labelingは使うことも考えたけど, そもそものモデルの性能が悪すぎて全然labelingできなさそうだと思ったのでやめていた. discussionに書いてあったけどもしpretrainedする場合はデータの重複がないことを確認しないとLeakになってしまうのでその辺が難しそう. 
 
+## 16-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226595) 
+
+### 概要
+- pretrainedweightで学習させて, pseudolabelingしてから最後にfinetuningしてaverage ensembleした. 
+- MultiHeadAttentionをつかった. GeM?もつかった. 
+
+### 感想
+- GeMって何?
+- Neptune.aiってやつを使っている人がちらほらいる. MLFLow的なものっぽい. 
+
+## 17-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226565)
+[notebook](https://www.kaggle.com/datafan07/ranzcr-nfnets-tutorial-single-fold-training)
+
+### 概要
+- annotationをsegmentationとして用いた. 
+- 4model の　ensemble
+
+## 18-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226708)
+
+### 概要
+- pretrainde-modelを用いて, 3stage(augmentationやtargetを変える)の学習をした. 
+- heavyなaugmentationとして, ランダムにannotation部分を消して, labelも外すということを行った. 
+- 8h59m
+
+## 19-th place 
+### 概要
+- NFNet-f3とResNet200Dを使った. 
+- distillationを使ってある程度学習させてから, fine-tuningすると早く学習できた. 
+- pseudo labelingした. 
+
+## 22-th place 
+[github](https://github.com/lRomul/ranzcr-clip) 
+
+## 23-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226715)
+
+### 概要
+- multi-head-modelでspatial-attentionを使ったものをensembleした. 
+- imsize = 640
+
+### 感想
+- multi-head-modelはspatial-attentionを使うとよいCVがでるdiscussionは読んでいたけれど, spatian-attentionが実装できなくて諦めていた. 
+
+## 26-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226618)
+### 概要
+- batchsizeが大きいと局所最適に陥りやすくて(過学習しやすくて), 小さすぎる場合は収束が遅くなる. 
+- segmentationとかはしていないっぽい? 
 
 # 反省点
 - TensorFlowを書けるようにするという目標もあったので仕方ないが, torchの方が学習済みモデルがたくさんあったので, torchを使うことをもっと前から検討すればよかった. 
