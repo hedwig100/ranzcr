@@ -15,7 +15,9 @@ tensorflowをちゃんと書けるようにする<br>
 ## 1-st place 
 [discussion1](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226576) <br>
 [discussion2](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226633) <br> 
-[code]()
+[code segmentation](https://www.kaggle.com/haqishen/ranzcr-1st-place-soluiton-seg-model-small-ver) <br>
+[code classification](https://www.kaggle.com/haqishen/ranzcr-1st-place-soluiton-cls-model-small-ver) <br> 
+[inference](https://www.kaggle.com/haqishen/ranzcr-1st-place-soluiton-inference-small-ver) 
 
 ### 概要
 - NIH Chest X-Ray Dataを使った. Trainとして与えれたデータ以外にも, このうちTubeを含む画像のみを取り出した. そして, 同じ患者かどうかをPatientIDで区別して同じFoldに入らないようにした.
@@ -66,6 +68,19 @@ tensorflowをちゃんと書けるようにする<br>
 - ResNet200D,EfficientNetB7はUNetEncoderを用いて使えたけど, NFNetは難しかったので3StageTrainingした. 
 - 外部データはpseudo-labelingしてクラスのバランスよくデータを増やした. 
 - 外部データでのtrainingはteacher-student形式でtrainingした後に, 元のdatasetでfine-tuningした. 
+
+
+## 10-th place 
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/227103)
+
+### 概要
+- pytorchとtensorflowのensemble
+- imsizeやmodel自体を変えてensembleした.比較的大きめのモデル. 
+- soft labelで学習させるのがよかった.  
+- peseudo labelingをした. 
+
+### 感想
+- segmentationなしでもここまでいけるんだと驚いた. 
 
 ## 11-th place 
 [discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226557)
