@@ -259,6 +259,8 @@ tensorflowをちゃんと書けるようにする<br>
 - annotated imageの一つの利用法
 - annotationをどうやってつかうかが参考になった. 
 
+![annoatation](/images/how-to-use-annotation.png)
+
 ***[11 Notebook](https://www.kaggle.com/underwearfitting/resnet200d-public-benchmark-2xtta-lb0-965)***
 - 重みを使わせていただきました... 
 - heavy augmentationはこんなにheavy. 
