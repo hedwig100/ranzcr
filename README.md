@@ -1,6 +1,8 @@
 # RANZCR 
 RANZCR用のレポジトリ
 
+![ranzcr image](/images/ranzcr_image.png)
+
 # Goal 
 画像コンペに慣れる <br>
 tensorflowをちゃんと書けるようにする<br>
@@ -41,6 +43,17 @@ tensorflowをちゃんと書けるようにする<br>
 - クラスを追加で入れてみて, より分類しやすくなることがあるのかもしれない. クラスを追加するという発想がなかった. 
 - まとめるとstage1 segでsegのpseudo labelingする => stage2 segでsegをつけるモデルを作る => stage1 clsでpseudo labelingをする => stage2 clsでclsをする. 
 - めっちゃ画像サイズおおきいsegmentation(重要な部分のみ切り出す?) => 分類する
+
+## 2-th place
+[discussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/227407) 
+
+### 概要
+- ranzcrのdatasetのみをつかった. 
+- pseudo-labelingですべてのデータにmaskをつけた. 
+- modelではmask(annotation)は入力としてではなく, 出力として用いた. つまりmaskとclassを出力してmaskとclassでそれぞれlossを出力した. 
+
+### 感想
+- segmentationを入力としてではなく, 出力として用いることもあるんだと思った. 
 
 ## 6-th place 
 [descussion](https://www.kaggle.com/c/ranzcr-clip-catheter-line-classification/discussion/226616)
